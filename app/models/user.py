@@ -1,14 +1,14 @@
 """
 The users table.
 
-This is the first and most important table. Every other piece of data
-(goals, body metrics, habits, plans) will eventually link back to a row
-here. For now it holds just enough to create and log in a user.
+Holds account info (email, password) plus the profile fields collected
+during onboarding. Fields are nullable because onboarding happens across
+12 steps - a user exists before every field is filled.
 """
 
 from datetime import datetime
 
-from sqlalchemy import String, DateTime, func
+from sqlalchemy import String, Integer, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db import Base
@@ -17,20 +17,21 @@ from app.db import Base
 class User(Base):
     __tablename__ = "users"
 
-    # Primary key: a unique integer id auto-assigned by Postgres.
     id: Mapped[int] = mapped_column(primary_key=True)
 
-    # The display name collected on onboarding step 1 ("What should we call you?").
-    name: Mapped[str] = mapped_column(String(80))
+    # ---- Account ----
+    # Email/password are optional for now: onboarding starts BEFORE signup,
+    # so an anonymous profile can exist and get an email attached later.
+    email: Mapped[str | None] = mapped_column(String(255), unique=True, index=True, nullable=True)
+    hashed_password: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
-    # Login email. unique=True stops two accounts sharing one email.
-    # index=True makes "find user by email" (every login) fast.
-    email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
+    # ---- Onboarding step 1: basic profile ----
+    name: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    # Stored as text bracket ("16-18", "19-24", "25+"), not a raw age.
+    age_bracket: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    height_cm: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    weight_kg: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
-    # The bcrypt HASH of the password, never the password itself.
-    hashed_password: Mapped[str] = mapped_column(String(255))
-
-    # Set automatically by the database when the row is created.
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )

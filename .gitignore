@@ -5,5 +5,3 @@ __pycache__/
 uploads/
 *.db
 .DS_Store
-.env.save
-.env*

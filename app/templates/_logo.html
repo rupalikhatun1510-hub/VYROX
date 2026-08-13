@@ -1,0 +1,18 @@
+{#
+  The VYROX "V" logo, drawn as inline SVG so it needs no image file and
+  scales crisply. The gradient matches the brand (violet -> blue).
+  Include with:  {% include "_logo.html" %}
+#}
+<div class="logo-row">
+  <svg class="logo-mark" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="VYROX logo">
+    <defs>
+      <linearGradient id="vgrad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#8b5cf6"/>
+        <stop offset="0.5" stop-color="#6366f1"/>
+        <stop offset="1" stop-color="#3b82f6"/>
+      </linearGradient>
+    </defs>
+    <path d="M6 6 L20 34 L34 6 L27 6 L20 21 L13 6 Z" fill="url(#vgrad)"/>
+  </svg>
+  <span class="logo-word">VYROX</span>
+</div>

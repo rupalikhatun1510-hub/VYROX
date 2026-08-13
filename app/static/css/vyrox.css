@@ -1,0 +1,258 @@
+/*
+  VYROX design system.
+  Every colour, gradient and shape here is taken directly from the mockups
+  so all pages share ONE visual language. Change a value here and it updates
+  everywhere. This is the single source of truth for the look.
+*/
+
+:root {
+  /* ---- Backgrounds (deep navy / near-black from the mockups) ---- */
+  --bg-0: #0a0a1a;      /* deepest background */
+  --bg-1: #0e0e24;      /* page background */
+  --bg-2: #14142e;      /* raised surfaces */
+
+  /* ---- Glass card surfaces (semi-transparent, blurred) ---- */
+  --glass: rgba(30, 30, 60, 0.45);
+  --glass-border: rgba(124, 92, 255, 0.22);
+  --glass-strong: rgba(40, 40, 80, 0.6);
+
+  /* ---- Brand accents (violet -> blue -> magenta) ---- */
+  --violet: #7c3aed;
+  --indigo: #4f46e5;
+  --blue: #3b82f6;
+  --magenta: #d946ef;
+
+  /* The signature button/logo gradient, used everywhere for primary actions */
+  --grad-primary: linear-gradient(135deg, #7c3aed 0%, #4f46e5 55%, #3b82f6 100%);
+  --grad-text: linear-gradient(135deg, #a78bfa 0%, #818cf8 50%, #60a5fa 100%);
+
+  /* ---- Text ---- */
+  --text-hi: #f5f5ff;    /* headings, high contrast */
+  --text-mid: #b8b8d8;   /* body text */
+  --text-lo: #7a7a9c;    /* captions, hints */
+
+  /* ---- Shape & feel ---- */
+  --radius-lg: 24px;     /* big cards */
+  --radius-md: 16px;     /* inputs, small cards */
+  --radius-pill: 999px;  /* buttons, chips */
+
+  --glow: 0 0 24px rgba(124, 92, 255, 0.35);
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
+
+  /* Mobile frame width. The whole app is designed for a phone. */
+  --app-max: 440px;
+}
+
+/* ---- Reset ---- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: -apple-system, "Segoe UI", "Inter", system-ui, sans-serif;
+  background: var(--bg-1);
+  color: var(--text-mid);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/*
+  The phone frame. On desktop this centres a phone-width column so the app
+  always looks like a mobile app. On an actual phone it fills the screen.
+*/
+.app-shell {
+  max-width: var(--app-max);
+  min-height: 100vh;
+  margin: 0 auto;
+  position: relative;
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(79, 70, 229, 0.25), transparent 60%),
+    radial-gradient(900px 500px at -10% 20%, rgba(124, 58, 237, 0.18), transparent 55%),
+    var(--bg-1);
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px;
+}
+
+/* ---- The V logo (built in CSS/SVG, no image needed) ---- */
+.logo-row { display: flex; align-items: center; gap: 10px; justify-content: center; }
+.logo-mark { width: 34px; height: 34px; }
+.logo-word {
+  font-weight: 800;
+  letter-spacing: 4px;
+  font-size: 22px;
+  color: var(--text-hi);
+}
+
+/* ---- Headings ---- */
+h1 {
+  color: var(--text-hi);
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+.accent {
+  background: var(--grad-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.eyebrow {
+  color: var(--text-lo);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.subtitle { color: var(--text-mid); font-size: 15px; line-height: 1.5; }
+
+/* ---- Glass card ---- */
+.card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  padding: 18px;
+}
+
+/* ---- Primary gradient button ---- */
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%;
+  padding: 17px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--grad-primary);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: var(--glow);
+  transition: transform 0.12s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+}
+.btn:active { transform: scale(0.98); }
+.btn:hover { box-shadow: 0 0 32px rgba(124, 92, 255, 0.55); }
+
+/* ---- Secondary (outline) button ---- */
+.btn-ghost {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%;
+  padding: 16px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-hi);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.btn-ghost:hover { border-color: var(--violet); background: rgba(124,92,255,0.08); }
+
+/* ---- Text input ---- */
+.field {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 15px 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.field:focus-within { border-color: var(--violet); box-shadow: var(--glow); }
+.field input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-hi);
+  font-size: 16px;   /* 16px stops iOS auto-zoom on focus */
+}
+.field input::placeholder { color: var(--text-lo); }
+.field .icn { color: var(--text-lo); display: flex; }
+
+/* ---- Progress bar (Step X of 12) ---- */
+.progress-row { display: flex; align-items: center; gap: 12px; margin: 6px 0 22px; }
+.progress-track { flex: 1; display: flex; gap: 5px; }
+.progress-seg {
+  flex: 1; height: 6px; border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+}
+.progress-seg.done { background: var(--grad-primary); }
+.progress-label { color: var(--text-lo); font-size: 12px; font-weight: 600; white-space: nowrap; }
+
+/* ---- Selectable pill (age brackets, sleep hours, etc.) ---- */
+.pill-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.pill {
+  flex: 1; min-width: 64px; text-align: center;
+  padding: 14px 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  color: var(--text-mid);
+  font-weight: 600; font-size: 15px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.pill.selected {
+  border-color: var(--violet);
+  background: rgba(124,92,255,0.18);
+  color: var(--text-hi);
+  box-shadow: var(--glow);
+}
+
+/* ---- Selectable goal card (grid of icon cards) ---- */
+.goal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.goal-card {
+  position: relative;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  padding: 16px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.goal-card.selected {
+  border-color: var(--violet);
+  background: rgba(124,92,255,0.16);
+  box-shadow: var(--glow);
+}
+.goal-card .g-icon { font-size: 26px; margin-bottom: 8px; display: block; }
+.goal-card .g-title { color: var(--text-hi); font-weight: 700; font-size: 14px; }
+.goal-card .g-sub { color: var(--text-lo); font-size: 11px; margin-top: 3px; }
+.goal-card .check {
+  position: absolute; top: 8px; right: 8px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--blue);
+  display: none; align-items: center; justify-content: center;
+  color: #fff; font-size: 12px;
+}
+.goal-card.selected .check { display: flex; }
+
+/* ---- spacing helpers ---- */
+.stack > * + * { margin-top: 16px; }
+.spacer { flex: 1; }
+.pad-top { padding-top: 22px; }
+.pad-bottom { padding-bottom: 28px; }
+.center { text-align: center; }
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.row { display: flex; gap: 12px; }
+
+/* ---- link ---- */
+a.link { color: var(--violet); font-weight: 600; text-decoration: none; }
+
+/* ---- Respect reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

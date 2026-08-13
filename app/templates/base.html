@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- viewport-fit=cover + the width lock make it behave like a real app on phones -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+  <meta name="theme-color" content="#0e0e24">
+  <title>{% block title %}VYROX{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/vyrox.css">
+</head>
+<body>
+  <div class="app-shell">
+    {% block body %}{% endblock %}
+  </div>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

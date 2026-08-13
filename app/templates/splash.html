@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}VYROX — Your personal upgrade{% endblock %}
+
+{% block body %}
+<div class="splash">
+  <div class="splash-hero">
+    <!-- Large centred V + wordmark -->
+    <svg width="90" height="90" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="vbig" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#8b5cf6"/><stop offset="0.5" stop-color="#6366f1"/><stop offset="1" stop-color="#3b82f6"/>
+        </linearGradient>
+      </defs>
+      <path d="M6 6 L20 34 L34 6 L27 6 L20 21 L13 6 Z" fill="url(#vbig)"/>
+    </svg>
+    <div class="splash-word">VYROX</div>
+    <div class="splash-tag">BETTER HABITS. STRONGER YOU.<br>EVERY DAY.</div>
+
+    <!-- The five pillars, matching the mockup row of icons -->
+    <div class="pillars">
+      <div class="pillar"><span>🏋️</span>FITNESS</div>
+      <div class="pillar"><span>🍱</span>NUTRITION</div>
+      <div class="pillar"><span>✨</span>GROOMING</div>
+      <div class="pillar"><span>🧘</span>WELLNESS</div>
+      <div class="pillar"><span>👤</span>YOU</div>
+    </div>
+  </div>
+
+  <div class="splash-actions stack">
+    <a href="/onboarding/step1" class="btn">GET STARTED &nbsp;›</a>
+    <a href="/login" class="btn-ghost">LOG IN</a>
+    <div class="center" style="color:var(--text-lo);font-size:11px;letter-spacing:2px;margin-top:6px">
+      YOUR PERSONAL UPGRADE STARTS HERE.
+    </div>
+  </div>
+</div>
+
+<style>
+  .splash { flex: 1; display: flex; flex-direction: column; padding: 40px 0 32px; }
+  .splash-hero { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .splash-word { font-size: 46px; font-weight: 800; letter-spacing: 10px; color: var(--text-hi); margin-top: 14px; }
+  .splash-tag { color: var(--text-mid); font-size: 12px; letter-spacing: 3px; margin-top: 14px; line-height: 1.8; }
+  .pillars { display: flex; gap: 16px; margin-top: 40px; }
+  .pillar { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 10px; letter-spacing: 1px; color: var(--text-lo); font-weight: 600; }
+  .pillar span { font-size: 20px; }
+  .splash-actions { padding-top: 20px; }
+</style>
+{% endblock %}

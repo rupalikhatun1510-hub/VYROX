@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Log in — VYROX{% endblock %}
+
+{% block body %}
+<div class="pad-top">
+  <a href="/" class="back" aria-label="Back">‹</a>
+
+  <div class="center" style="margin-top:24px">
+    <svg width="70" height="70" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="vl" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#8b5cf6"/><stop offset="0.5" stop-color="#6366f1"/><stop offset="1" stop-color="#3b82f6"/>
+      </linearGradient></defs>
+      <path d="M6 6 L20 34 L34 6 L27 6 L20 21 L13 6 Z" fill="url(#vl)"/>
+    </svg>
+    <div style="font-size:32px;font-weight:800;letter-spacing:8px;color:var(--text-hi);margin-top:8px">VYROX</div>
+    <div style="color:var(--text-lo);font-size:11px;letter-spacing:2px;margin-top:8px">BETTER HABITS. STRONGER YOU. EVERY DAY.</div>
+  </div>
+</div>
+
+<div class="card" style="margin-top:26px">
+  <h1 style="font-size:26px">Welcome back</h1>
+  <p class="subtitle" style="margin-top:6px">Log in to continue your VYROX journey</p>
+
+  <!-- POSTs to the /login route we define in the router -->
+  <form method="post" action="/login" class="stack" style="margin-top:20px">
+    <div class="field">
+      <span class="icn">✉️</span>
+      <input type="email" name="email" placeholder="Email address" required autocomplete="email">
+    </div>
+    <div class="field">
+      <span class="icn">🔒</span>
+      <input type="password" name="password" placeholder="Password" required autocomplete="current-password">
+    </div>
+
+    {% if error %}
+      <div style="color:#fca5a5;font-size:13px">{{ error }}</div>
+    {% endif %}
+
+    <button type="submit" class="btn" style="margin-top:6px">LOG IN &nbsp;›</button>
+  </form>
+
+  <div class="center" style="margin-top:20px;color:var(--text-lo);font-size:11px;letter-spacing:2px">OR CONTINUE WITH</div>
+  <div class="row" style="margin-top:12px">
+    <button class="social" disabled title="Coming soon">G<br><small>Google</small></button>
+    <button class="social" disabled title="Coming soon"></br><small>Apple</small></button>
+    <button class="social" disabled title="Coming soon">📱<br><small>Phone</small></button>
+  </div>
+
+  <div class="center" style="margin-top:20px;color:var(--text-mid);font-size:14px">
+    New to VYROX? <a href="/onboarding/step1" class="link">Create an account</a>
+  </div>
+</div>
+
+<div class="pad-bottom"></div>
+
+<style>
+  .back { color: var(--text-hi); font-size: 30px; text-decoration: none; line-height: 1; }
+  .social {
+    flex: 1; background: var(--glass); border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md); padding: 14px 6px; color: var(--text-mid);
+    font-size: 18px; cursor: not-allowed; text-align: center;
+  }
+  .social small { font-size: 11px; color: var(--text-lo); }
+</style>
+{% endblock %}

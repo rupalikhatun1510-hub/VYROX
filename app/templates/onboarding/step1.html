@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Get started — VYROX{% endblock %}
+
+{% block body %}
+<div class="pad-top">
+  <div class="row" style="justify-content:space-between;align-items:center">
+    {% include "_logo.html" %}
+    <span class="progress-label">Step 1 of 12</span>
+  </div>
+
+  <div class="progress-row">
+    <div class="progress-track">
+      {% for i in range(12) %}
+        <div class="progress-seg {% if i < 1 %}done{% endif %}"></div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="eyebrow">Let's get to know you</div>
+  <h1 style="margin-top:10px">What should<br>we <span class="accent">call you?</span></h1>
+  <p class="subtitle" style="margin-top:12px">Your answers help VYROX build a personalized plan just for you.</p>
+
+  <form method="post" action="/onboarding/step1" id="f1" class="stack" style="margin-top:24px">
+    <!-- Name -->
+    <div class="field">
+      <span class="icn">👤</span>
+      <input type="text" name="name" placeholder="Your name" required maxlength="80" value="{{ name or '' }}">
+    </div>
+
+    <!-- Age bracket. NOTE: 13-15 removed on purpose. Floor is 16. -->
+    <div style="margin-top:8px">
+      <div class="eyebrow" style="letter-spacing:2px">Your age</div>
+      <div class="pill-row" style="margin-top:10px" id="agePills">
+        <div class="pill" data-val="16-18">16–18</div>
+        <div class="pill" data-val="19-24">19–24</div>
+        <div class="pill" data-val="25+">25+</div>
+      </div>
+      <input type="hidden" name="age_bracket" id="ageInput" required>
+    </div>
+
+    <!-- Height + Weight -->
+    <div class="row" style="margin-top:8px">
+      <div style="flex:1">
+        <div class="eyebrow" style="letter-spacing:2px">Height</div>
+        <div class="field" style="margin-top:10px">
+          <input type="number" name="height_cm" placeholder="178" min="120" max="230" required>
+          <span class="icn" style="font-size:13px">cm</span>
+        </div>
+      </div>
+      <div style="flex:1">
+        <div class="eyebrow" style="letter-spacing:2px">Weight</div>
+        <div class="field" style="margin-top:10px">
+          <input type="number" name="weight_kg" placeholder="72" min="30" max="250" required>
+          <span class="icn" style="font-size:13px">kg</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Why we ask card -->
+    <div class="card" style="margin-top:8px;padding:14px">
+      <div class="eyebrow" style="color:var(--violet)">✨ Why we ask</div>
+      <p class="subtitle" style="margin-top:6px;font-size:13px">
+        This helps VYROX create a plan that actually matches your body, goals and lifestyle.
+      </p>
+    </div>
+
+    <button type="submit" class="btn" style="margin-top:8px">NEXT &nbsp;›</button>
+  </form>
+  <div class="center" style="margin-top:14px">
+    <a href="/onboarding/step3" class="link" style="font-size:14px">Skip for now</a>
+  </div>
+</div>
+<div class="pad-bottom"></div>
+
+<script>
+  // Age pill selection: tapping one selects it and fills the hidden input.
+  const pills = document.querySelectorAll('#agePills .pill');
+  const ageInput = document.getElementById('ageInput');
+  pills.forEach(p => p.addEventListener('click', () => {
+    pills.forEach(x => x.classList.remove('selected'));
+    p.classList.add('selected');
+    ageInput.value = p.dataset.val;
+  }));
+
+  // Block submit if no age chosen (hidden input has no native "required" UI).
+  document.getElementById('f1').addEventListener('submit', (e) => {
+    if (!ageInput.value) { e.preventDefault(); alert('Please pick your age range.'); }
+  });
+</script>
+{% endblock %}
