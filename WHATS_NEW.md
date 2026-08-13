@@ -1,32 +1,38 @@
-# VYROX — onboarding steps 2-4
+# VYROX — onboarding steps 5 & 6
 
-Adds three real onboarding screens on top of step 1.
+Adds the last two onboarding screens.
 
-## New screens
-    step2  Goals grid (multi-select, 9 goals)
-    step3  Body type + activity level
-    step4  Diet type, food likes, dislikes, allergies
+## New
+    step5  Face photo upload + AI grooming analysis (GPT-4o vision)
+    step6  Daily habits (sleep, water, routine, stress)
+    done   Summary page showing everything collected
 
-## IMPORTANT: the users table changed
-This build adds new columns (goals, body_type, activity_level, diet_type,
-food_likes, food_dislikes, allergies). Your existing table doesn't have
-them, so you MUST drop and recreate it once:
+## The AI in step 5
+When you upload a photo, the app:
+  1. resizes it to <=1024px and STRIPS EXIF (removes GPS location)
+  2. sends the front photo to GPT-4o for GROOMING analysis only
+     (face shape, hair, skin - NO ratings, NO beauty scores)
+  3. caches the result so it never re-runs
 
-    # stop uvicorn first (Ctrl+C), then:
+If OPENAI_API_KEY is empty, step 5 still works - it saves the photo and
+shows a "add your key to enable AI" note instead of crashing. Put your
+real key in .env to get real analysis. Cost: ~1 rupee per photo.
+
+## IMPORTANT: table changed again
+New columns were added (face_photo_path, face_analysis, sleep_hours,
+water_intake, routine_type, stress_level). Drop + recreate once:
+
+    # stop uvicorn (Ctrl+C), then:
     sudo docker exec -it vyrox_db psql -U vyrox -d vyrox -c "DROP TABLE users;"
-    # then start the app again - it recreates the table with all columns:
     uv run uvicorn app.main:app --reload
 
-(You lose any test users, which is fine - they were test data.)
+## Walk it
+    /  ->  step1..step6  ->  /onboarding/done  (full summary)
 
-## The flow now
-    /  ->  step1 (name/age/body)  ->  step2 (goals)  ->  step3 (body/activity)
-       ->  step4 (diet)  ->  step5 (placeholder: shows everything you saved)
+The photo upload works best tested on your PHONE (mkcert HTTPS) since
+that's where the camera opens. On desktop it opens a file picker.
 
-Walk it in the browser. After step4 you land on a summary page listing
-all the data that was saved, confirming steps 1-4 all persist.
-
-## What's next
-    step5  Face photo upload
-    step6  Daily habits (sleep/water/routine/stress)
-    then   AI plan generation + plan-ready screen + dashboard
+## Next
+    AI plan generation (the "Building your plan" loading screen)
+    Plan-ready screen
+    Home dashboard

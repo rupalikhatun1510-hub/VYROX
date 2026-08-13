@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}Your habits — VYROX{% endblock %}
+
+{% block body %}
+<div class="pad-top">
+  <div class="row" style="justify-content:space-between;align-items:center">
+    <a href="/onboarding/step5" class="back-sm">‹</a>
+    {% include "_logo.html" %}
+    <span class="progress-label">Step 6 of 6</span>
+  </div>
+
+  <div class="progress-row">
+    <div class="progress-track">
+      {% for i in range(6) %}
+        <div class="progress-seg done"></div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="eyebrow">Your lifestyle</div>
+  <h1 style="margin-top:10px">Tell us about your <span class="accent">daily habits</span></h1>
+  <p class="subtitle" style="margin-top:12px">These details help VYROX create a plan that fits into your life.</p>
+
+  <form method="post" action="/onboarding/step6" id="f6" class="stack" style="margin-top:20px">
+
+    <!-- Sleep -->
+    <div class="card" style="padding:16px">
+      <div class="eyebrow" style="letter-spacing:2px">🌙 How many hours do you sleep?</div>
+      <p class="subtitle" style="font-size:12px;margin-top:2px">Be honest — it helps a lot.</p>
+      <div class="pill-row" style="margin-top:12px" data-group="sleep">
+        <div class="pill" data-val="&lt;5">&lt; 5</div>
+        <div class="pill" data-val="5-6">5–6</div>
+        <div class="pill" data-val="6-7">6–7</div>
+        <div class="pill" data-val="7-8">7–8</div>
+        <div class="pill" data-val="8+">8+</div>
+      </div>
+      <input type="hidden" name="sleep_hours" id="sleepInput" required>
+    </div>
+
+    <!-- Water -->
+    <div class="card" style="padding:16px">
+      <div class="eyebrow" style="letter-spacing:2px">💧 How much water do you drink daily?</div>
+      <div class="pill-row" style="margin-top:12px" data-group="water">
+        <div class="pill" data-val="&lt;1L">&lt; 1L</div>
+        <div class="pill" data-val="1-2L">1–2L</div>
+        <div class="pill" data-val="2-3L">2–3L</div>
+        <div class="pill" data-val="3L+">3L+</div>
+      </div>
+      <input type="hidden" name="water_intake" id="waterInput" required>
+    </div>
+
+    <!-- Routine -->
+    <div class="card" style="padding:16px">
+      <div class="eyebrow" style="letter-spacing:2px">🕐 What's your typical daily routine?</div>
+      <div class="goal-grid" style="grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px" data-grid="routine">
+        <div class="goal-card" data-val="student"><span class="check">✓</span><span class="g-icon">☀️</span><span class="g-title" style="font-size:12px">Student</span></div>
+        <div class="goal-card" data-val="working"><span class="check">✓</span><span class="g-icon">💻</span><span class="g-title" style="font-size:12px">Working</span></div>
+        <div class="goal-card" data-val="self"><span class="check">✓</span><span class="g-icon">💼</span><span class="g-title" style="font-size:12px">Self-emp.</span></div>
+        <div class="goal-card" data-val="other"><span class="check">✓</span><span class="g-icon">⚙️</span><span class="g-title" style="font-size:12px">Other</span></div>
+      </div>
+      <input type="hidden" name="routine_type" id="routineInput">
+    </div>
+
+    <!-- Stress -->
+    <div class="card" style="padding:16px">
+      <div class="eyebrow" style="letter-spacing:2px">🧠 How would you rate your stress?</div>
+      <div class="pill-row" style="margin-top:12px" data-group="stress">
+        <div class="pill" data-val="low">🙂 Low</div>
+        <div class="pill" data-val="medium">😐 Medium</div>
+        <div class="pill" data-val="high">🙁 High</div>
+      </div>
+      <input type="hidden" name="stress_level" id="stressInput">
+    </div>
+
+    <div class="row" style="margin-top:6px">
+      <a href="/onboarding/step5" class="btn-ghost" style="flex:0 0 40%">← Back</a>
+      <button type="submit" class="btn" style="flex:1">Build my plan &nbsp;›</button>
+    </div>
+  </form>
+</div>
+<div class="pad-bottom"></div>
+
+<script>
+  // Single-select for every pill group.
+  document.querySelectorAll('[data-group]').forEach(group => {
+    const name = group.dataset.group;
+    const out = document.getElementById(name + 'Input');
+    group.querySelectorAll('.pill').forEach(p => p.addEventListener('click', () => {
+      group.querySelectorAll('.pill').forEach(x => x.classList.remove('selected'));
+      p.classList.add('selected'); out.value = p.dataset.val;
+    }));
+  });
+  // Single-select for the routine card grid.
+  document.querySelectorAll('[data-grid]').forEach(grid => {
+    const name = grid.dataset.grid;
+    const out = document.getElementById(name + 'Input');
+    grid.querySelectorAll('.goal-card').forEach(c => c.addEventListener('click', () => {
+      grid.querySelectorAll('.goal-card').forEach(x => x.classList.remove('selected'));
+      c.classList.add('selected'); out.value = c.dataset.val;
+    }));
+  });
+
+  document.getElementById('f6').addEventListener('submit', (e) => {
+    if (!document.getElementById('sleepInput').value || !document.getElementById('waterInput').value) {
+      e.preventDefault(); alert('Please answer sleep and water at least.');
+    }
+  });
+</script>
+
+<style>.back-sm{color:var(--text-hi);font-size:26px;text-decoration:none;line-height:1}</style>
+{% endblock %}

@@ -1,27 +1,24 @@
 """
-Onboarding routes, steps 1 through 4.
+Onboarding routes, steps 1 through 6.
 
-The session cookie carries user_id between steps so every screen updates
-the same row. A small helper, _current_user, fetches that row (or makes
-a new one) so each step handler stays short.
-
-Flow: step1 (profile) -> step2 (goals) -> step3 (body/activity)
-      -> step4 (diet) -> step5 (placeholder, built next).
+Step 5 is the only one that does real work beyond saving form fields:
+it takes an uploaded photo, cleans it, runs the AI grooming analysis,
+and caches the result on the user row so it's never recomputed.
 """
 
-from fastapi import APIRouter, Request, Form, Depends
+from fastapi import APIRouter, Request, Form, UploadFile, File, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.models.user import User
 from app.templates_engine import templates
+from app.services.vision import save_clean_photo, analyze_face
 
 router = APIRouter(prefix="/onboarding")
 
 
 def _current_user(request: Request, db: Session) -> User:
-    """Return the session's user row, creating one if this is a fresh start."""
     uid = request.session.get("user_id")
     user = db.get(User, uid) if uid else None
     if user is None:
@@ -34,7 +31,6 @@ def _current_user(request: Request, db: Session) -> User:
 
 
 def _csv(value: str) -> list[str]:
-    """Turn 'a,b,c' from a hidden field into ['a','b','c']; '' -> []."""
     return [v for v in (value or "").split(",") if v]
 
 
@@ -75,11 +71,7 @@ def step2_page(request: Request):
 
 
 @router.post("/step2")
-def step2_submit(
-    request: Request,
-    goals: str = Form(""),
-    db: Session = Depends(get_db),
-):
+def step2_submit(request: Request, goals: str = Form(""), db: Session = Depends(get_db)):
     user = _current_user(request, db)
     user.goals = _csv(goals)
     db.commit()
@@ -130,25 +122,84 @@ def step4_submit(
     return RedirectResponse("/onboarding/step5", status_code=303)
 
 
-# ---------- STEP 5: placeholder (face upload, built next) ----------
+# ---------- STEP 5: face upload + AI ----------
 @router.get("/step5", response_class=HTMLResponse)
-def step5_placeholder(request: Request, db: Session = Depends(get_db)):
+def step5_page(request: Request):
+    return templates.TemplateResponse(request, "onboarding/step5.html")
+
+
+@router.post("/step5")
+async def step5_submit(
+    request: Request,
+    photo: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
     user = _current_user(request, db)
-    name = user.name or "there"
-    goals = ", ".join(user.goals or []) or "—"
+
+    # Read the upload, clean it (resize + strip EXIF), save to disk.
+    raw = await photo.read()
+    path = save_clean_photo(raw, user.id)
+    user.face_photo_path = path
+
+    # Run the AI grooming analysis ONCE and cache the result.
+    user.face_analysis = analyze_face(path)
+
+    db.commit()
+    return RedirectResponse("/onboarding/step6", status_code=303)
+
+
+# ---------- STEP 6: daily habits ----------
+@router.get("/step6", response_class=HTMLResponse)
+def step6_page(request: Request):
+    return templates.TemplateResponse(request, "onboarding/step6.html")
+
+
+@router.post("/step6")
+def step6_submit(
+    request: Request,
+    sleep_hours: str = Form(...),
+    water_intake: str = Form(...),
+    routine_type: str = Form(""),
+    stress_level: str = Form(""),
+    db: Session = Depends(get_db),
+):
+    user = _current_user(request, db)
+    user.sleep_hours = sleep_hours
+    user.water_intake = water_intake
+    user.routine_type = routine_type or None
+    user.stress_level = stress_level or None
+    db.commit()
+    return RedirectResponse("/onboarding/done", status_code=303)
+
+
+# ---------- DONE: summary (plan generation + dashboard come next) ----------
+@router.get("/done", response_class=HTMLResponse)
+def done(request: Request, db: Session = Depends(get_db)):
+    user = _current_user(request, db)
+    fa = user.face_analysis or {}
+    face_line = (
+        f"Face: {fa.get('face_shape','—')} · Hair: {fa.get('hair','—')} · Skin: {fa.get('skin','—')}"
+        if fa.get("available")
+        else "Face analysis: not run (add OpenAI key to enable)"
+    )
     return HTMLResponse(
         f"""
         <div style="font-family:system-ui;background:#0e0e24;color:#f5f5ff;
                     min-height:100vh;display:flex;align-items:center;
                     justify-content:center;text-align:center;padding:24px">
-          <div style="max-width:360px">
-            <h1 style="font-size:26px">Steps 1–4 saved, {name} ✓</h1>
-            <p style="color:#b8b8d8;margin-top:14px;line-height:1.6">
-              Goals: {goals}<br>
-              Body: {user.body_type or '—'} · {user.activity_level or '—'}<br>
-              Diet: {user.diet_type or '—'}
+          <div style="max-width:380px">
+            <h1 style="font-size:26px">All 6 steps done, {user.name or 'there'} ✓</h1>
+            <p style="color:#b8b8d8;margin-top:14px;line-height:1.7">
+              Goals: {", ".join(user.goals or []) or "—"}<br>
+              Body: {user.body_type or "—"} · {user.activity_level or "—"}<br>
+              Diet: {user.diet_type or "—"}<br>
+              Sleep: {user.sleep_hours or "—"} · Water: {user.water_intake or "—"}<br>
+              Routine: {user.routine_type or "—"} · Stress: {user.stress_level or "—"}<br>
+              <span style="color:#a78bfa">{face_line}</span>
             </p>
-            <p style="color:#7a7a9c;margin-top:16px">Next to build: step 5 (face upload).</p>
+            <p style="color:#7a7a9c;margin-top:16px">
+              Next to build: AI plan generation + the home dashboard.
+            </p>
             <a href="/" style="color:#a78bfa;display:inline-block;margin-top:20px">← Back to start</a>
           </div>
         </div>

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Your face — VYROX{% endblock %}
+
+{% block body %}
+<div class="pad-top">
+  <div class="row" style="justify-content:space-between;align-items:center">
+    <a href="/onboarding/step4" class="back-sm">‹</a>
+    {% include "_logo.html" %}
+    <span class="progress-label">Step 5 of 6</span>
+  </div>
+
+  <div class="progress-row">
+    <div class="progress-track">
+      {% for i in range(6) %}
+        <div class="progress-seg {% if i < 5 %}done{% endif %}"></div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="eyebrow">Your face &amp; appearance</div>
+  <h1 style="margin-top:10px">Let's analyze <span class="accent">your face</span></h1>
+  <p class="subtitle" style="margin-top:12px">Upload a front photo so VYROX can suggest a haircut and skincare routine that suits you.</p>
+
+  <!--
+    The form uploads a file. enctype=multipart/form-data is REQUIRED for
+    file uploads. capture="user" hints phones to open the selfie camera.
+  -->
+  <form method="post" action="/onboarding/step5" enctype="multipart/form-data" id="f5" class="stack" style="margin-top:20px">
+
+    <!-- Front photo (required). Tapping the tile opens camera/gallery. -->
+    <label class="upload-tile" id="tile">
+      <input type="file" name="photo" accept="image/*" capture="user" id="photo" hidden required>
+      <div id="tilePlaceholder">
+        <div class="cam">📷</div>
+        <div class="tile-title">Add front photo</div>
+        <div class="tile-sub">Tap to take a selfie or choose one</div>
+      </div>
+      <img id="preview" alt="preview" style="display:none">
+    </label>
+
+    <!-- What we'll analyze -->
+    <div>
+      <div class="eyebrow" style="letter-spacing:2px">We'll analyze:</div>
+      <div class="row" style="margin-top:10px;gap:8px">
+        <div class="mini-card">😊<span>Skin</span></div>
+        <div class="mini-card">💇<span>Hair</span></div>
+        <div class="mini-card">🔲<span>Face shape</span></div>
+        <div class="mini-card">✨<span>Grooming</span></div>
+      </div>
+    </div>
+
+    <!-- Privacy note (matches mockup) -->
+    <div class="card" style="padding:14px">
+      <p class="subtitle" style="font-size:13px">
+        🔒 Your photo is private and used only for your personal analysis. It is never shared.
+      </p>
+    </div>
+
+    <div class="row" style="margin-top:6px">
+      <a href="/onboarding/step4" class="btn-ghost" style="flex:0 0 40%">← Back</a>
+      <button type="submit" class="btn" style="flex:1" id="submitBtn">Analyze &nbsp;›</button>
+    </div>
+    <div class="center" style="margin-top:10px">
+      <a href="/onboarding/step6" class="link" style="font-size:14px">Skip for now</a>
+    </div>
+  </form>
+</div>
+<div class="pad-bottom"></div>
+
+<script>
+  const input = document.getElementById('photo');
+  const preview = document.getElementById('preview');
+  const placeholder = document.getElementById('tilePlaceholder');
+  const btn = document.getElementById('submitBtn');
+
+  // Show a preview of the chosen photo inside the tile.
+  input.addEventListener('change', () => {
+    const file = input.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    preview.src = url;
+    preview.style.display = 'block';
+    placeholder.style.display = 'none';
+  });
+
+  // While the AI runs (a few seconds), show a working state so the
+  // screen never looks frozen.
+  document.getElementById('f5').addEventListener('submit', () => {
+    btn.textContent = 'Analyzing…';
+    btn.style.opacity = '0.8';
+  });
+</script>
+
+<style>
+  .back-sm { color: var(--text-hi); font-size: 26px; text-decoration: none; line-height: 1; }
+  .upload-tile {
+    display: block; border: 2px dashed var(--glass-border);
+    border-radius: var(--radius-lg); background: var(--glass);
+    padding: 30px 16px; text-align: center; cursor: pointer;
+    transition: border-color 0.2s ease;
+  }
+  .upload-tile:hover { border-color: var(--violet); }
+  .cam { font-size: 40px; }
+  .tile-title { color: var(--text-hi); font-weight: 700; margin-top: 8px; }
+  .tile-sub { color: var(--text-lo); font-size: 12px; margin-top: 4px; }
+  #preview { width: 100%; max-height: 320px; object-fit: cover; border-radius: 14px; }
+  .mini-card {
+    flex: 1; background: var(--glass); border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md); padding: 12px 4px; text-align: center;
+    font-size: 22px;
+  }
+  .mini-card span { display: block; font-size: 11px; color: var(--text-lo); margin-top: 4px; }
+</style>
+{% endblock %}
