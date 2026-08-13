@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Your body — VYROX{% endblock %}
+
+{% block body %}
+<div class="pad-top">
+  <div class="row" style="justify-content:space-between;align-items:center">
+    <a href="/onboarding/step2" class="back-sm">‹</a>
+    {% include "_logo.html" %}
+    <span class="progress-label">Step 3 of 6</span>
+  </div>
+
+  <div class="progress-row">
+    <div class="progress-track">
+      {% for i in range(6) %}
+        <div class="progress-seg {% if i < 3 %}done{% endif %}"></div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="eyebrow">Your body</div>
+  <h1 style="margin-top:10px">Tell us about <span class="accent">your current body</span></h1>
+  <p class="subtitle" style="margin-top:12px">This helps VYROX create the right plan for you.</p>
+
+  <form method="post" action="/onboarding/step3" id="f3" class="stack" style="margin-top:20px">
+
+    <!-- Body type -->
+    <div>
+      <div class="eyebrow" style="letter-spacing:2px">⚙ Body type (optional)</div>
+      <div class="pill-row" style="margin-top:10px" id="bodyPills">
+        <div class="pill" data-val="lean">Lean</div>
+        <div class="pill" data-val="average">Average</div>
+        <div class="pill" data-val="muscular">Muscular</div>
+        <div class="pill" data-val="not_sure">Not sure</div>
+      </div>
+      <input type="hidden" name="body_type" id="bodyInput">
+    </div>
+
+    <!-- Activity level -->
+    <div>
+      <div class="eyebrow" style="letter-spacing:2px">🏃 Activity level</div>
+      <p class="subtitle" style="font-size:12px;margin-top:4px">How active are you in daily life?</p>
+      <div class="goal-grid" style="grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px" id="actGrid">
+        <div class="goal-card" data-val="sedentary"><span class="check">✓</span><span class="g-icon">🛋️</span><span class="g-title" style="font-size:12px">Mostly</span><span class="g-sub">sedentary</span></div>
+        <div class="goal-card" data-val="light"><span class="check">✓</span><span class="g-icon">🚶</span><span class="g-title" style="font-size:12px">Lightly</span><span class="g-sub">active</span></div>
+        <div class="goal-card" data-val="moderate"><span class="check">✓</span><span class="g-icon">🏃</span><span class="g-title" style="font-size:12px">Moderately</span><span class="g-sub">active</span></div>
+        <div class="goal-card" data-val="very"><span class="check">✓</span><span class="g-icon">🏋️</span><span class="g-title" style="font-size:12px">Very</span><span class="g-sub">active</span></div>
+      </div>
+      <input type="hidden" name="activity_level" id="actInput" required>
+    </div>
+
+    <div class="row" style="margin-top:10px">
+      <a href="/onboarding/step2" class="btn-ghost" style="flex:0 0 40%">← Back</a>
+      <button type="submit" class="btn" style="flex:1">NEXT &nbsp;›</button>
+    </div>
+  </form>
+</div>
+<div class="pad-bottom"></div>
+
+<script>
+  // single-select for body pills
+  const bp = document.querySelectorAll('#bodyPills .pill');
+  const bi = document.getElementById('bodyInput');
+  bp.forEach(p => p.addEventListener('click', () => {
+    bp.forEach(x => x.classList.remove('selected'));
+    p.classList.add('selected'); bi.value = p.dataset.val;
+  }));
+  // single-select for activity cards
+  const ac = document.querySelectorAll('#actGrid .goal-card');
+  const ai = document.getElementById('actInput');
+  ac.forEach(c => c.addEventListener('click', () => {
+    ac.forEach(x => x.classList.remove('selected'));
+    c.classList.add('selected'); ai.value = c.dataset.val;
+  }));
+  document.getElementById('f3').addEventListener('submit', (e) => {
+    if (!ai.value) { e.preventDefault(); alert('Pick your activity level.'); }
+  });
+</script>
+
+<style>.back-sm{color:var(--text-hi);font-size:26px;text-decoration:none;line-height:1}</style>
+{% endblock %}

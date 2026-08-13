@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Your diet — VYROX{% endblock %}
+
+{% block body %}
+<div class="pad-top">
+  <div class="row" style="justify-content:space-between;align-items:center">
+    <a href="/onboarding/step3" class="back-sm">‹</a>
+    {% include "_logo.html" %}
+    <span class="progress-label">Step 4 of 6</span>
+  </div>
+
+  <div class="progress-row">
+    <div class="progress-track">
+      {% for i in range(6) %}
+        <div class="progress-seg {% if i < 4 %}done{% endif %}"></div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="eyebrow">Your food</div>
+  <h1 style="margin-top:10px">Tell us about your <span class="accent">diet &amp; food habits</span></h1>
+  <p class="subtitle" style="margin-top:12px">This helps VYROX create the perfect meal plan for you.</p>
+
+  <form method="post" action="/onboarding/step4" id="f4" class="stack" style="margin-top:20px">
+
+    <!-- Diet type -->
+    <div>
+      <div class="eyebrow" style="letter-spacing:2px">What do you usually eat?</div>
+      <div class="goal-grid" style="grid-template-columns:repeat(3,1fr);margin-top:10px" id="dietGrid">
+        <div class="goal-card" data-val="veg"><span class="check">✓</span><span class="g-icon">🥬</span><span class="g-title" style="font-size:13px">Vegetarian</span><span class="g-sub">Veg only</span></div>
+        <div class="goal-card" data-val="nonveg"><span class="check">✓</span><span class="g-icon">🍗</span><span class="g-title" style="font-size:13px">Non-veg</span><span class="g-sub">Veg + Non-veg</span></div>
+        <div class="goal-card" data-val="other"><span class="check">✓</span><span class="g-icon">🌱</span><span class="g-title" style="font-size:13px">Other</span><span class="g-sub">Flexible</span></div>
+      </div>
+      <input type="hidden" name="diet_type" id="dietInput" required>
+    </div>
+
+    <!-- Food likes (multi) -->
+    <div>
+      <div class="eyebrow" style="letter-spacing:2px">Your food preferences</div>
+      <p class="subtitle" style="font-size:12px;margin-top:4px;color:var(--blue)">Select all that you like</p>
+      <div class="goal-grid" style="grid-template-columns:repeat(3,1fr);margin-top:10px" id="likeGrid">
+        <div class="goal-card" data-val="chicken"><span class="check">✓</span><span class="g-icon">🍗</span><span class="g-title" style="font-size:13px">Chicken</span></div>
+        <div class="goal-card" data-val="eggs"><span class="check">✓</span><span class="g-icon">🥚</span><span class="g-title" style="font-size:13px">Eggs</span></div>
+        <div class="goal-card" data-val="fish"><span class="check">✓</span><span class="g-icon">🐟</span><span class="g-title" style="font-size:13px">Fish</span></div>
+        <div class="goal-card" data-val="paneer"><span class="check">✓</span><span class="g-icon">🧀</span><span class="g-title" style="font-size:13px">Paneer</span></div>
+        <div class="goal-card" data-val="fruits"><span class="check">✓</span><span class="g-icon">🍎</span><span class="g-title" style="font-size:13px">Fruits</span></div>
+        <div class="goal-card" data-val="dairy"><span class="check">✓</span><span class="g-icon">🥛</span><span class="g-title" style="font-size:13px">Dairy</span></div>
+        <div class="goal-card" data-val="rice"><span class="check">✓</span><span class="g-icon">🍚</span><span class="g-title" style="font-size:13px">Rice</span></div>
+        <div class="goal-card" data-val="oats"><span class="check">✓</span><span class="g-icon">🌾</span><span class="g-title" style="font-size:13px">Oats</span></div>
+        <div class="goal-card" data-val="other"><span class="check">✓</span><span class="g-icon">•••</span><span class="g-title" style="font-size:13px">Other</span></div>
+      </div>
+      <input type="hidden" name="food_likes" id="likeInput">
+    </div>
+
+    <!-- Dislikes free text -->
+    <div>
+      <div class="eyebrow" style="letter-spacing:2px">Any foods you dislike?</div>
+      <div class="field" style="margin-top:10px">
+        <span class="icn">🔍</span>
+        <input type="text" name="food_dislikes" placeholder="e.g. broccoli, mushrooms, spicy food..." maxlength="300">
+      </div>
+    </div>
+
+    <!-- Allergies -->
+    <div>
+      <div class="eyebrow" style="letter-spacing:2px">Any allergies or conditions?</div>
+      <div class="pill-row" style="margin-top:10px" id="allergyPills">
+        <div class="pill" data-val="none">None</div>
+        <div class="pill" data-val="lactose">Lactose</div>
+        <div class="pill" data-val="gluten">Gluten</div>
+        <div class="pill" data-val="other">Other</div>
+      </div>
+      <input type="hidden" name="allergies" id="allergyInput">
+    </div>
+
+    <div class="row" style="margin-top:10px">
+      <a href="/onboarding/step3" class="btn-ghost" style="flex:0 0 40%">← Back</a>
+      <button type="submit" class="btn" style="flex:1">Next &nbsp;›</button>
+    </div>
+  </form>
+</div>
+<div class="pad-bottom"></div>
+
+<script>
+  function single(gridSel, inputId) {
+    const cards = document.querySelectorAll(gridSel);
+    const out = document.getElementById(inputId);
+    cards.forEach(c => c.addEventListener('click', () => {
+      cards.forEach(x => x.classList.remove('selected'));
+      c.classList.add('selected'); out.value = c.dataset.val;
+    }));
+  }
+  function multi(gridSel, inputId) {
+    const cards = document.querySelectorAll(gridSel);
+    const out = document.getElementById(inputId);
+    const set = new Set();
+    cards.forEach(c => c.addEventListener('click', () => {
+      const v = c.dataset.val;
+      if (set.has(v)) { set.delete(v); c.classList.remove('selected'); }
+      else { set.add(v); c.classList.add('selected'); }
+      out.value = [...set].join(',');
+    }));
+  }
+  single('#dietGrid .goal-card', 'dietInput');
+  multi('#likeGrid .goal-card', 'likeInput');
+  single('#allergyPills .pill', 'allergyInput');
+
+  document.getElementById('f4').addEventListener('submit', (e) => {
+    if (!document.getElementById('dietInput').value) {
+      e.preventDefault(); alert('Pick what you usually eat.');
+    }
+  });
+</script>
+
+<style>.back-sm{color:var(--text-hi);font-size:26px;text-decoration:none;line-height:1}</style>
+{% endblock %}

@@ -227,8 +227,10 @@ h1 {
   box-shadow: var(--glow);
 }
 .goal-card .g-icon { font-size: 26px; margin-bottom: 8px; display: block; }
-.goal-card .g-title { color: var(--text-hi); font-weight: 700; font-size: 14px; }
-.goal-card .g-sub { color: var(--text-lo); font-size: 11px; margin-top: 3px; }
+.goal-card .g-title { color: var(--text-hi); font-weight: 700; font-size: 14px; display: block; }
+.goal-card .g-sub { color: var(--text-lo); font-size: 11px; margin-top: 4px; display: block; }
+.goal-grid[style*="repeat(4"] .goal-card { padding: 12px 4px; }
+.goal-grid[style*="repeat(4"] .g-icon { font-size: 22px; }
 .goal-card .check {
   position: absolute; top: 8px; right: 8px;
   width: 20px; height: 20px; border-radius: 50%;

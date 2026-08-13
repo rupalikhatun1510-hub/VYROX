@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Your goals — VYROX{% endblock %}
+
+{% block body %}
+<div class="pad-top">
+  <div class="row" style="justify-content:space-between;align-items:center">
+    <a href="/onboarding/step1" class="back-sm">‹</a>
+    {% include "_logo.html" %}
+    <span class="progress-label">Step 2 of 6</span>
+  </div>
+
+  <div class="progress-row">
+    <div class="progress-track">
+      {% for i in range(6) %}
+        <div class="progress-seg {% if i < 2 %}done{% endif %}"></div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="eyebrow">Your goals</div>
+  <h1 style="margin-top:10px">What do you want<br>to <span class="accent">achieve?</span></h1>
+  <p class="subtitle" style="margin-top:12px">Select all that apply. You can choose multiple.</p>
+
+  <form method="post" action="/onboarding/step2" id="f2" style="margin-top:20px">
+    <div class="goal-grid" id="goals">
+      <div class="goal-card" data-val="build_muscle"><span class="check">✓</span><span class="g-icon">💪</span><span class="g-title">Build muscle</span><span class="g-sub">Gain lean mass</span></div>
+      <div class="goal-card" data-val="lose_fat"><span class="check">✓</span><span class="g-icon">🔥</span><span class="g-title">Lose fat</span><span class="g-sub">Get leaner</span></div>
+      <div class="goal-card" data-val="get_stronger"><span class="check">✓</span><span class="g-icon">🏋️</span><span class="g-title">Get stronger</span><span class="g-sub">Increase strength</span></div>
+      <div class="goal-card" data-val="endurance"><span class="check">✓</span><span class="g-icon">🏃</span><span class="g-title">Endurance</span><span class="g-sub">Stamina & cardio</span></div>
+      <div class="goal-card" data-val="posture"><span class="check">✓</span><span class="g-icon">🧍</span><span class="g-title">Better posture</span><span class="g-sub">Stand taller</span></div>
+      <div class="goal-card" data-val="mobility"><span class="check">✓</span><span class="g-icon">🤸</span><span class="g-title">Mobility</span><span class="g-sub">Move better</span></div>
+      <div class="goal-card" data-val="sleep"><span class="check">✓</span><span class="g-icon">🌙</span><span class="g-title">Better sleep</span><span class="g-sub">Feel rested</span></div>
+      <div class="goal-card" data-val="skin"><span class="check">✓</span><span class="g-icon">✨</span><span class="g-title">Improve skin</span><span class="g-sub">Clearer skin</span></div>
+      <div class="goal-card" data-val="energy"><span class="check">✓</span><span class="g-icon">⚡</span><span class="g-title">More energy</span><span class="g-sub">Daily performance</span></div>
+    </div>
+
+    <!-- Hidden field holds the comma-joined selected values -->
+    <input type="hidden" name="goals" id="goalsInput">
+
+    <div class="card" style="margin-top:18px;padding:14px">
+      <p class="subtitle" style="font-size:13px">
+        ✨ VYROX will combine your goals with your body type, lifestyle and preferences to create your personalized plan.
+      </p>
+    </div>
+
+    <div class="row" style="margin-top:18px">
+      <a href="/onboarding/step1" class="btn-ghost" style="flex:0 0 40%">← Back</a>
+      <button type="submit" class="btn" style="flex:1">Next &nbsp;›</button>
+    </div>
+  </form>
+</div>
+<div class="pad-bottom"></div>
+
+<script>
+  const cards = document.querySelectorAll('#goals .goal-card');
+  const out = document.getElementById('goalsInput');
+  const chosen = new Set();
+  cards.forEach(c => c.addEventListener('click', () => {
+    const v = c.dataset.val;
+    if (chosen.has(v)) { chosen.delete(v); c.classList.remove('selected'); }
+    else { chosen.add(v); c.classList.add('selected'); }
+    out.value = [...chosen].join(',');
+  }));
+  document.getElementById('f2').addEventListener('submit', (e) => {
+    if (chosen.size === 0) { e.preventDefault(); alert('Pick at least one goal.'); }
+  });
+</script>
+
+<style>
+  .back-sm { color: var(--text-hi); font-size: 26px; text-decoration: none; line-height: 1; }
+</style>
+{% endblock %}
