@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Your plan is ready — VYROX{% endblock %}
+
+{% block body %}
+<div class="pad-top">
+  <div class="row" style="justify-content:space-between;align-items:center">
+    {% include "_logo.html" %}
+    <span class="ready-badge">Your Plan is Ready ✨</span>
+  </div>
+
+  <h1 style="margin-top:20px">Your VYROX Plan<br>is Ready, <span class="accent">{{ user.name or "there" }}!</span></h1>
+  <p class="subtitle" style="margin-top:10px">100% personalized. Built for you.</p>
+
+  <!-- Profile card -->
+  <div class="card profile-card" style="margin-top:18px">
+    <div class="row" style="align-items:center;gap:14px">
+      <div class="avatar">{{ (user.name or "U")[0]|upper }}</div>
+      <div style="flex:1">
+        <div style="color:var(--text-hi);font-weight:800;font-size:18px">{{ user.name or "You" }}</div>
+        <span class="plan-tag">Your VYROX Plan</span>
+      </div>
+    </div>
+    <div class="row" style="margin-top:16px;text-align:center">
+      <div style="flex:1"><div class="stat-v">{{ user.age_bracket or "—" }}</div><div class="stat-l">Age</div></div>
+      <div style="flex:1"><div class="stat-v">{{ user.height_cm or "—" }}</div><div class="stat-l">Height cm</div></div>
+      <div style="flex:1"><div class="stat-v">{{ user.weight_kg or "—" }}</div><div class="stat-l">Weight kg</div></div>
+      <div style="flex:1"><div class="stat-v" style="font-size:14px">{{ goal_label }}</div><div class="stat-l">Goal</div></div>
+    </div>
+  </div>
+
+  <h2 style="color:var(--text-hi);font-size:20px;margin-top:24px">Here's What You'll Get</h2>
+
+  <!-- Plan section cards -->
+  <div class="goal-grid" style="grid-template-columns:1fr 1fr;gap:12px;margin-top:14px">
+    <div class="plan-card"><span class="pc-icon">🏋️</span><div class="pc-title">Workout Plan</div><div class="pc-sub">{{ plan.workout.title }}</div></div>
+    <div class="plan-card"><span class="pc-icon">🍱</span><div class="pc-title">Diet & Meals</div><div class="pc-sub">{{ plan.meals.note[:40] }}</div></div>
+    <div class="plan-card"><span class="pc-icon">✨</span><div class="pc-title">Grooming</div><div class="pc-sub">Haircut & style</div></div>
+    <div class="plan-card"><span class="pc-icon">🧴</span><div class="pc-title">Skin Lab</div><div class="pc-sub">Your routine</div></div>
+    <div class="plan-card"><span class="pc-icon">💇</span><div class="pc-title">Hair Lab</div><div class="pc-sub">Healthier hair</div></div>
+    <div class="plan-card"><span class="pc-icon">🎯</span><div class="pc-title">Daily Routine</div><div class="pc-sub">Habits & focus</div></div>
+  </div>
+
+  <div class="card" style="margin-top:16px;padding:14px">
+    <p class="subtitle" style="font-size:13px">✨ {{ plan.insight }}</p>
+  </div>
+
+  <a href="/dashboard" class="btn" style="margin-top:18px">ENTER VYROX &nbsp;›</a>
+</div>
+<div class="pad-bottom"></div>
+
+<style>
+  .ready-badge {
+    background: rgba(124,92,255,0.18); border: 1px solid var(--glass-border);
+    border-radius: var(--radius-pill); padding: 8px 14px;
+    color: var(--text-hi); font-size: 12px; font-weight: 600;
+  }
+  .profile-card { border-color: rgba(124,92,255,0.4); }
+  .avatar {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--grad-primary); display: flex; align-items: center;
+    justify-content: center; color: #fff; font-weight: 800; font-size: 26px;
+  }
+  .plan-tag {
+    display: inline-block; margin-top: 4px;
+    background: rgba(59,130,246,0.18); color: #93c5fd;
+    border-radius: var(--radius-pill); padding: 3px 10px; font-size: 11px; font-weight: 600;
+  }
+  .stat-v { color: var(--text-hi); font-weight: 800; font-size: 18px; }
+  .stat-l { color: var(--text-lo); font-size: 11px; margin-top: 2px; }
+  .plan-card {
+    background: var(--glass); border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md); padding: 16px 12px; text-align: left;
+  }
+  .pc-icon { font-size: 24px; }
+  .pc-title { color: var(--text-hi); font-weight: 700; font-size: 15px; margin-top: 8px; }
+  .pc-sub { color: var(--text-lo); font-size: 12px; margin-top: 3px; }
+</style>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}VYROX — Home{% endblock %}
+
+{% block body %}
+<div class="pad-top">
+  <!-- Header -->
+  <div class="row" style="justify-content:space-between;align-items:center">
+    <div>
+      <div style="color:var(--text-hi);font-weight:800;font-size:20px">Welcome back, {{ user.name or "there" }}</div>
+      <div style="color:var(--text-lo);font-size:12px;margin-top:2px">Day 1 · Your VYROX Journey</div>
+    </div>
+    <div class="avatar-sm">{{ (user.name or "U")[0]|upper }}</div>
+  </div>
+
+  <!-- Progress ring -->
+  <div class="card" style="margin-top:18px;text-align:center;padding:24px">
+    <svg width="140" height="140" viewBox="0 0 140 140" style="transform:rotate(-90deg)">
+      <circle cx="70" cy="70" r="60" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="12"/>
+      <circle cx="70" cy="70" r="60" fill="none" stroke="url(#ring)" stroke-width="12"
+              stroke-linecap="round" stroke-dasharray="377" stroke-dashoffset="145"/>
+      <defs><linearGradient id="ring" x1="0" y1="0" x2="140" y2="140" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#7c3aed"/><stop offset="1" stop-color="#3b82f6"/>
+      </linearGradient></defs>
+    </svg>
+    <div style="margin-top:-95px;margin-bottom:60px">
+      <div style="color:var(--text-hi);font-size:36px;font-weight:800">62</div>
+      <div style="color:var(--text-lo);font-size:11px;letter-spacing:2px">/ 100</div>
+    </div>
+    <div class="eyebrow" style="letter-spacing:2px">VYROX Progress</div>
+    <div class="row" style="margin-top:14px">
+      <div style="flex:1"><div class="mini-v">86</div><div class="mini-l">Consistency</div></div>
+      <div style="flex:1"><div class="mini-v">74</div><div class="mini-l">Fitness</div></div>
+      <div style="flex:1"><div class="mini-v">81</div><div class="mini-l">Habits</div></div>
+      <div style="flex:1"><div class="mini-v">63</div><div class="mini-l">Sleep</div></div>
+    </div>
+  </div>
+
+  <!-- Today's plan quick cards -->
+  <h2 style="color:var(--text-hi);font-size:18px;margin-top:22px">Today's Plan</h2>
+  <div class="goal-grid" style="grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+    {% if plan %}
+    <div class="plan-card"><span class="pc-icon">🏋️</span><div class="pc-title">Workout</div><div class="pc-sub">{{ plan.workout.title }}</div></div>
+    <div class="plan-card"><span class="pc-icon">🍱</span><div class="pc-title">Food</div><div class="pc-sub">Today's Nutrition</div></div>
+    <div class="plan-card"><span class="pc-icon">✨</span><div class="pc-title">Grooming</div><div class="pc-sub">Face + Style</div></div>
+    <div class="plan-card"><span class="pc-icon">🧘</span><div class="pc-title">Body Lab</div><div class="pc-sub">Mobility</div></div>
+    {% endif %}
+  </div>
+
+  {% if plan %}
+  <!-- Today's workout detail -->
+  <div class="card" style="margin-top:18px">
+    <div class="row" style="justify-content:space-between;align-items:center">
+      <div style="color:var(--text-hi);font-weight:800;font-size:17px">{{ plan.workout.title }}</div>
+      <span class="chip">{{ plan.workout.days_per_week }} days/wk</span>
+    </div>
+    <div style="color:var(--text-lo);font-size:12px;margin-top:2px">{{ plan.workout.focus }}</div>
+    <div class="stack" style="margin-top:14px">
+      {% for ex in plan.workout.exercises %}
+      <div class="ex-row"><span>{{ ex.name }}</span><span class="ex-sets">{{ ex.sets }}</span></div>
+      {% endfor %}
+    </div>
+    <button class="btn" style="margin-top:16px">START WORKOUT &nbsp;›</button>
+  </div>
+
+  <!-- Today's meals -->
+  <h2 style="color:var(--text-hi);font-size:18px;margin-top:22px">Today's Meals</h2>
+  <div class="stack" style="margin-top:12px">
+    <div class="meal-row"><span class="meal-icon">🌅</span><div><div class="meal-name">Breakfast</div><div class="meal-desc">{{ plan.meals.breakfast }}</div></div></div>
+    <div class="meal-row"><span class="meal-icon">☀️</span><div><div class="meal-name">Lunch</div><div class="meal-desc">{{ plan.meals.lunch }}</div></div></div>
+    <div class="meal-row"><span class="meal-icon">🌙</span><div><div class="meal-name">Dinner</div><div class="meal-desc">{{ plan.meals.dinner }}</div></div></div>
+  </div>
+
+  <!-- AI insight -->
+  <div class="card" style="margin-top:18px;padding:16px">
+    <div class="eyebrow" style="color:var(--violet)">✨ AI Insight</div>
+    <p class="subtitle" style="font-size:14px;margin-top:6px">{{ plan.insight }}</p>
+  </div>
+  {% else %}
+  <div class="card" style="margin-top:18px;text-align:center">
+    <p class="subtitle">No plan yet.</p>
+    <a href="/onboarding/building" class="btn" style="margin-top:12px">Build my plan</a>
+  </div>
+  {% endif %}
+</div>
+<div class="pad-bottom"></div>
+
+<style>
+  .avatar-sm { width:44px;height:44px;border-radius:50%;background:var(--grad-primary);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800; }
+  .mini-v { color:var(--text-hi);font-weight:800;font-size:18px; }
+  .mini-l { color:var(--text-lo);font-size:10px;margin-top:2px; }
+  .plan-card { background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:16px 12px; }
+  .pc-icon { font-size:24px; } .pc-title { color:var(--text-hi);font-weight:700;font-size:15px;margin-top:8px; } .pc-sub { color:var(--text-lo);font-size:12px;margin-top:3px; }
+  .chip { background:rgba(124,92,255,0.18);color:#c4b5fd;border-radius:var(--radius-pill);padding:4px 10px;font-size:11px;font-weight:600; }
+  .ex-row { display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);color:var(--text-mid); }
+  .ex-sets { color:var(--text-hi);font-weight:600; }
+  .meal-row { display:flex;gap:14px;align-items:center;background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:14px; }
+  .meal-icon { font-size:24px; }
+  .meal-name { color:var(--text-hi);font-weight:700; } .meal-desc { color:var(--text-lo);font-size:13px;margin-top:2px; }
+</style>
+{% endblock %}

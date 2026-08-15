@@ -169,7 +169,14 @@ def step6_submit(
     user.routine_type = routine_type or None
     user.stress_level = stress_level or None
     db.commit()
-    return RedirectResponse("/onboarding/done", status_code=303)
+    return RedirectResponse("/onboarding/building", status_code=303)
+
+
+
+# ---------- BUILDING: loading screen that triggers plan generation ----------
+@router.get("/building", response_class=HTMLResponse)
+def building(request: Request):
+    return templates.TemplateResponse(request, "onboarding/building.html")
 
 
 # ---------- DONE: summary (plan generation + dashboard come next) ----------

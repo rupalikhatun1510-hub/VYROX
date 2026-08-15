@@ -1,38 +1,44 @@
-# VYROX — onboarding steps 5 & 6
+# VYROX — AI plan generation + dashboard
 
-Adds the last two onboarding screens.
+The big one. Onboarding now flows into a real AI-generated plan and the
+home dashboard.
 
 ## New
-    step5  Face photo upload + AI grooming analysis (GPT-4o vision)
-    step6  Daily habits (sleep, water, routine, stress)
-    done   Summary page showing everything collected
+    /onboarding/building   Animated "Building your plan" loading screen
+    /plan/generate         (POST) the ONE GPT-4o call that builds the plan
+    /plan/ready            Plan-ready screen (profile + plan cards)
+    /dashboard             Home dashboard (progress ring, workout, meals)
 
-## The AI in step 5
-When you upload a photo, the app:
-  1. resizes it to <=1024px and STRIPS EXIF (removes GPS location)
-  2. sends the front photo to GPT-4o for GROOMING analysis only
-     (face shape, hair, skin - NO ratings, NO beauty scores)
-  3. caches the result so it never re-runs
+## How the AI plan works
+Step 6 now sends you to the building screen. That screen:
+  1. animates the 6-item checklist (UX only)
+  2. in the background POSTs to /plan/generate
+  3. that makes ONE GPT-4o call with your whole profile and returns a
+     structured plan: workout, meals, grooming, habits, insight
+  4. the plan is saved, then you land on /plan/ready -> ENTER VYROX -> dashboard
 
-If OPENAI_API_KEY is empty, step 5 still works - it saves the photo and
-shows a "add your key to enable AI" note instead of crashing. Put your
-real key in .env to get real analysis. Cost: ~1 rupee per photo.
+Safety built in: for the 16-18 age bracket the prompt forbids calorie
+deficits and restrictive dieting. No medical claims, no ratings.
 
-## IMPORTANT: table changed again
-New columns were added (face_photo_path, face_analysis, sleep_hours,
-water_intake, routine_type, stress_level). Drop + recreate once:
+No API key? It still works - you get a sensible DEFAULT plan built from
+your own answers, so nothing breaks. Add your key for real AI plans.
+Cost: one call per plan, roughly 1-2 rupees.
+
+## IMPORTANT: new table added
+This adds a "plans" table. The users table is unchanged, so you only
+need to let the app create the new table - which it does on startup.
+But if you hit any DB error, the clean reset is:
 
     # stop uvicorn (Ctrl+C), then:
-    sudo docker exec -it vyrox_db psql -U vyrox -d vyrox -c "DROP TABLE users;"
+    sudo docker exec -it vyrox_db psql -U vyrox -d vyrox -c "DROP TABLE IF EXISTS plans; DROP TABLE IF EXISTS users;"
     uv run uvicorn app.main:app --reload
 
 ## Walk it
-    /  ->  step1..step6  ->  /onboarding/done  (full summary)
-
-The photo upload works best tested on your PHONE (mkcert HTTPS) since
-that's where the camera opens. On desktop it opens a file picker.
+    /  ->  step1..step6  ->  building (watch it generate)  ->  ready
+       ->  ENTER VYROX  ->  dashboard
 
 ## Next
-    AI plan generation (the "Building your plan" loading screen)
-    Plan-ready screen
-    Home dashboard
+    Make dashboard cards tappable (workout player, food scanner, etc.)
+    Skin Lab, Hair Lab, Body Lab, Progress, Profile
+    Real signup/auth so accounts persist
+    Subscription / paywall

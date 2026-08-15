@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Building your plan — VYROX{% endblock %}
+
+{% block body %}
+<div class="pad-top build-screen">
+  <div class="center">
+    {% include "_logo.html" %}
+    <div class="eyebrow" style="margin-top:22px;color:var(--violet)">We're ready…</div>
+    <h1 style="margin-top:10px">Building Your<br><span class="accent">VYROX</span> Plan</h1>
+    <p class="subtitle" style="margin-top:12px">VYROX is analyzing your answers and creating a fully personalized plan just for you.</p>
+  </div>
+
+  <div class="stack" style="margin-top:28px">
+    <div class="build-row" data-step="0"><span class="b-icon">🧠</span><div class="b-txt"><div class="b-title">Analyzing your profile</div><div class="b-sub">Body, goals & lifestyle</div></div><span class="b-check">○</span></div>
+    <div class="build-row" data-step="1"><span class="b-icon">🏋️</span><div class="b-txt"><div class="b-title">Creating fitness plan</div><div class="b-sub">Your workout routine</div></div><span class="b-check">○</span></div>
+    <div class="build-row" data-step="2"><span class="b-icon">🍱</span><div class="b-txt"><div class="b-title">Planning your meals</div><div class="b-sub">Your personalized diet</div></div><span class="b-check">○</span></div>
+    <div class="build-row" data-step="3"><span class="b-icon">✨</span><div class="b-txt"><div class="b-title">Grooming & skin</div><div class="b-sub">Haircut & skincare</div></div><span class="b-check">○</span></div>
+    <div class="build-row" data-step="4"><span class="b-icon">🎯</span><div class="b-txt"><div class="b-title">Setting your habits</div><div class="b-sub">Daily routines</div></div><span class="b-check">○</span></div>
+    <div class="build-row" data-step="5"><span class="b-icon">🚀</span><div class="b-txt"><div class="b-title">Finalizing your plan</div><div class="b-sub">Almost ready…</div></div><span class="b-check">○</span></div>
+  </div>
+
+  <div class="card" style="margin-top:22px;padding:16px">
+    <p class="subtitle" style="font-size:13px">✨ Your future self will thank you. This plan is 100% personalized. No generic advice. Just you.</p>
+  </div>
+</div>
+
+<script>
+  // Kick off the real generation immediately (a background fetch).
+  // Meanwhile animate the checklist so the screen feels alive.
+  const rows = document.querySelectorAll('.build-row');
+  let i = 0;
+  const tick = setInterval(() => {
+    if (i < rows.length) {
+      const chk = rows[i].querySelector('.b-check');
+      chk.textContent = '✓';
+      chk.classList.add('done');
+      rows[i].classList.add('active');
+      i++;
+    }
+  }, 550);
+
+  // Ask the server to generate the plan. When it's done AND the checklist
+  // animation has had time to play, go to the plan-ready screen.
+  const started = Date.now();
+  fetch('/plan/generate', { method: 'POST' })
+    .then(r => r.json())
+    .then(() => {
+      const elapsed = Date.now() - started;
+      const minShow = rows.length * 550 + 400; // let the animation finish
+      const wait = Math.max(0, minShow - elapsed);
+      setTimeout(() => { window.location.href = '/plan/ready'; }, wait);
+    })
+    .catch(() => {
+      // Even on error the server returns a default plan, so still proceed.
+      setTimeout(() => { window.location.href = '/plan/ready'; }, 3500);
+    });
+</script>
+
+<style>
+  .build-screen { padding-bottom: 30px; }
+  .build-row {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--glass); border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md); padding: 14px 16px;
+    opacity: 0.5; transition: opacity 0.3s ease, border-color 0.3s ease;
+  }
+  .build-row.active { opacity: 1; border-color: var(--violet); }
+  .b-icon { font-size: 22px; }
+  .b-txt { flex: 1; }
+  .b-title { color: var(--text-hi); font-weight: 700; font-size: 15px; }
+  .b-sub { color: var(--text-lo); font-size: 12px; margin-top: 2px; }
+  .b-check { color: var(--text-lo); font-size: 20px; }
+  .b-check.done { color: var(--blue); }
+</style>
+{% endblock %}

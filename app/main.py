@@ -5,14 +5,16 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 from app.config import settings
 from app.db import Base, engine, get_db
-from app.models import user as _user_model  # noqa: F401
-from app.routers import pages, onboarding
+from app.models import user as _u  # noqa: F401
+from app.models import plan as _p  # noqa: F401
+from app.routers import pages, onboarding, plan
 app = FastAPI(title="VYROX")
 app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
 Base.metadata.create_all(bind=engine)
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 app.include_router(pages.router)
 app.include_router(onboarding.router)
+app.include_router(plan.router)
 @app.get("/health")
 def health():
     return {"status": "ok", "app": "VYROX"}
